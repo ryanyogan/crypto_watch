@@ -30,10 +30,8 @@ defmodule CryptoWatch.Exchanges.BitstampClient do
 
   @impl true
   def handle_ws_message(%{"event" => "trade"} = msg, state) do
-    msg
-    |> message_to_trade()
-    |> IO.inspect(label: "Trade")
-
+    {:ok, trade} = message_to_trade(msg)
+    CryptoWatch.Exchanges.broadcast(trade)
     {:noreply, state}
   end
 
