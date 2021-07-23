@@ -1,2 +1,2 @@
 alias CryptoWatch.{Product, Trade}
-alias CryptoWatch.Exchanges.{BitstampClient, CoinbaseClient}
+alias CryptoWatch.Exchanges.{BitstampClient, Client, CoinbaseClient}
