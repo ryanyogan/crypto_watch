@@ -1,22 +1,17 @@
 defmodule CryptoWatch.Exchanges.CoinbaseClient do
   alias CryptoWatch.{Trade, Product}
   alias CryptoWatch.Exchanges.Client
-  import Client, only: [validate_required: 2]
+  require Client
 
-  @behaviour Client
-
-  @impl true
-  def exchange_name, do: "coinbase"
-
-  @impl true
-  def server_host, do: 'ws-feed.pro.coinbase.com'
-
-  @impl true
-  def server_port, do: 443
+  Client.defclient(
+    exchange_name: "coinbase",
+    host: 'ws-feed.pro.coinbase.com',
+    port: 443,
+    currency_pairs: ["BTC-USD", "ETH-USD", "LTC-USD", "BTC-EUR", "ETH-EUR", "LTC-EUR"]
+  )
 
   @impl true
   def handle_ws_message(%{"type" => "ticker"} = msg, state) do
-    # map a message to a Trade struct
     msg
     |> message_to_trade()
     |> IO.inspect(label: "Trade")

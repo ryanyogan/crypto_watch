@@ -21,6 +21,33 @@ defmodule CryptoWatch.Exchanges.Client do
   @callback subscription_frames([String.t()]) :: [{:text, String.t()}]
   @callback handle_ws_message(map(), any()) :: any()
 
+  defmacro defclient(options) do
+    exchange_name = Keyword.fetch!(options, :exchange_name)
+    host = Keyword.fetch!(options, :host)
+    port = Keyword.fetch!(options, :port)
+    currency_pairs = Keyword.fetch!(options, :currency_pairs)
+    client_module = __MODULE__
+
+    quote do
+      @behaviour unquote(client_module)
+      import unquote(client_module), only: [validate_required: 2]
+      require Logger
+
+      @spec available_currency_pairs() :: [String.t()]
+      def available_currency_pairs, do: unquote(currency_pairs)
+      def exchange_name, do: unquote(exchange_name)
+      def server_host, do: unquote(host)
+      def server_port, do: unquote(port)
+
+      def handle_ws_message(msg, state) do
+        Logger.debug("handle_ws_message: #{inspect(msg)}")
+        {:noreply, state}
+      end
+
+      defoverridable handle_ws_message: 2
+    end
+  end
+
   @spec start_link(module(), [String.t()], Keyword.t()) :: GenServer.on_start()
   def start_link(module, currency_pairs, options \\ []) do
     GenServer.start_link(__MODULE__, {module, currency_pairs}, options)
