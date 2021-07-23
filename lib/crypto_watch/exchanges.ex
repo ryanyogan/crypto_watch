@@ -1,6 +1,21 @@
 defmodule CryptoWatch.Exchanges do
   alias CryptoWatch.{Product, Trade}
 
+  @clients [
+    CryptoWatch.Exchanges.CoinbaseClient,
+    CryptoWatch.Exchanges.BitstampClient
+  ]
+
+  @available_products (for client <- @clients, pair <- client.available_currency_pairs() do
+                         Product.new(client.exchange_name(), pair)
+                       end)
+
+  @spec clients() :: [module()]
+  def clients, do: @clients
+
+  @spec available_products() :: [Product.t()]
+  def available_products, do: @available_products
+
   @spec subscribe(Product.t()) :: :ok | {:error, term()}
   def subscribe(product) do
     Phoenix.PubSub.subscribe(CryptoWatch.PubSub, topic(product))
