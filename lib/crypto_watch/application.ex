@@ -8,6 +8,7 @@ defmodule CryptoWatch.Application do
       CryptoWatchWeb.Telemetry,
       {Phoenix.PubSub, name: CryptoWatch.PubSub},
       {CryptoWatch.Historical, name: CryptoWatch.Historical},
+      {CryptoWatch.Exchanges.Supervisor, name: CryptoWatch.Exchanges.Supervisor},
       CryptoWatchWeb.Endpoint
     ]
 
