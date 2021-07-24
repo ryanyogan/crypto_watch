@@ -11,4 +11,5 @@ defmodule CryptoWatch do
   defdelegate unsubscribe_to_trades(product), to: CryptoWatch.Exchanges, as: :unsubscribe
   defdelegate get_last_trade(product), to: CryptoWatch.Historical
   defdelegate get_last_trades(product), to: CryptoWatch.Historical
+  defdelegate available_products(), to: CryptoWatch.Exchanges
 end
