@@ -4,24 +4,9 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    # list of the products
-    products = CryptoWatch.available_products()
-
-    # trade list to a map %{Product.t() => Trade.t()}
-    trades =
-      products
-      |> CryptoWatch.get_last_trades()
-      |> Enum.reject(&is_nil/1)
-      |> Enum.map(&{&1.product, &1})
-      |> Enum.into(%{})
-
-    if connected?(socket) do
-      Enum.each(products, &CryptoWatch.subscribe_to_trades/1)
-    end
-
     {:ok,
      socket
-     |> assign(trades: trades, products: products)}
+     |> assign(trades: %{}, products: [])}
   end
 
   @impl true
@@ -30,6 +15,18 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     <div class="flex items-center justify-center bg-gray-900">
       <div class="col-span-12 mt-12">
         <div class="overflow-auto lg:overflow-visible ">
+          <form action="#" phx-submit="add-product">
+            <select name="product_id">
+              <option selected disabled>Add a Crypto Product</option>
+              <%= for product <- CryptoWatch.available_products() do %>
+                <option value="<%= to_string(product) %>">
+                  <%= product.exchange_name %> - <%= product.currency_pair %>
+                </option>
+              <% end %>
+            </select>
+            <button class="px-4 py-2 shaddow-lg rounded-lg text-gray-800 bg-gray-100">Add product</button>
+          </form>
+
           <table class="table text-gray-300 border-separate space-y-6 text-sm">
             <thead class="bg-gray-800 text-gray-500">
               <tr>
@@ -113,5 +110,37 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
       end)
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("clear", _params, socket) do
+    {:noreply, assign(socket, :trades, %{})}
+  end
+
+  @impl true
+  def handle_event("add-product", %{"product_id" => product_id}, socket) do
+    [exchange_name, currency_pair] = String.split(product_id, ":")
+    product = Product.new(exchange_name, currency_pair)
+    socket = maybe_add_product(socket, product)
+    {:noreply, socket}
+  end
+
+  defp maybe_add_product(socket, product) do
+    if product not in socket.assigns.products do
+      add_product(socket, product)
+    else
+      socket
+    end
+  end
+
+  defp add_product(socket, product) do
+    CryptoWatch.subscribe_to_trades(product)
+
+    socket
+    |> update(:products, fn products -> products ++ [product] end)
+    |> update(:trades, fn trades ->
+      trade = CryptoWatch.get_last_trade(product)
+      Map.put(trades, product, trade)
+    end)
   end
 end
