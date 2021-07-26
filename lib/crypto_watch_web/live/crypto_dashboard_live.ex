@@ -12,93 +12,56 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="flex items-center justify-center bg-gray-900">
-      <div class="col-span-12 mt-12">
-        <div class="overflow-auto lg:overflow-visible ">
-          <form action="#" phx-submit="add-product">
-            <select name="product_id">
-              <option selected disabled>Add a Crypto Product</option>
-              <%= for product <- CryptoWatch.available_products() do %>
-                <option value="<%= to_string(product) %>">
-                  <%= product.exchange_name %> - <%= product.currency_pair %>
-                </option>
-              <% end %>
-            </select>
-            <button class="px-4 py-2 shaddow-lg rounded-lg text-gray-800 bg-gray-100">Add product</button>
-          </form>
+    <div class="flex gap-x-2">
+      <form action="#" phx-change="add-product">
+        <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option selected disabled>Add a Crypto Product</option>
+          <%= for product <- CryptoWatch.available_products() do %>
+            <option value="<%= to_string(product) %>">
+              <%= product.exchange_name %> - <%= product.currency_pair %>
+            </option>
+          <% end %>
+        </select>
+      </form>
+    </div>
 
-          <table class="table text-gray-300 border-separate space-y-6 text-sm">
-            <thead class="bg-gray-800 text-gray-500">
-              <tr>
-                <th class="p-3">Crypto</th>
-                <th class="p-3 text-left">Price</th>
-                <th class="p-3 text-left">Volume</th>
-                <th class="p-3 text-left">Status</th>
-                <th class="p-3 text-left">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <%= for product <- @products, trade = @trades[product], not is_nil(trade) do %>
-              <tr class="bg-gray-800">
-                <td class="p-3">
-                  <div class="flex align-items-center">
-                    <img class="rounded-full h-12 w-12 object-cover" src="https://images.unsplash.com/photo-1613588718956-c2e80305bf61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80" alt="unsplash image">
-                    <div class="ml-3">
-                      <div class=""><%= trade.product.currency_pair %></div>
-                      <div class="text-gray-500"><%= trade.product.exchange_name %></div>
-                    </div>
-                  </div>
-                </td>
-                <td class="p-3">
-                  <%= trade.price %>
-                </td>
-                <td class="p-3 font-bold">
-                  <%= trade.volume %>
-                </td>
-                <td class="p-3">
-                  <span class="bg-green-400 text-gray-50 rounded-md px-2">available</span>
-                </td>
-                <td class="p-3 ">
-                  <a href="#" class="text-gray-400 hover:text-gray-100 mr-2">
-                    <i class="material-icons-outlined text-base">visibility</i>
-                  </a>
-                  <a href="#" class="text-gray-400 hover:text-gray-100  mx-2">
-                    <i class="material-icons-outlined text-base">edit</i>
-                  </a>
-                  <a href="#" class="text-gray-400 hover:text-gray-100  ml-2">
-                    <i class="material-icons-round text-base">delete_outline</i>
-                  </a>
-                </td>
-              </tr>
-              <% end %>
-            </tbody>
-          </table>
+    <div class="mt-2 flex flex-col">
+      <div class="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
+          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <table class="min-w-full divide-y divid-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crypto</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
+                  <th class="hidden sm:block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traded At</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <%= for product <- @products, trade = @trades[product], not is_nil(trade) do %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <%= trade.product.currency_pair %>
+                    <%= trade.product.exchange_name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <%= trade.price %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <%= trade.volume %>
+                  </td>
+                  <td class="hidden sm:block px-6 py-4 whitespace-nowrap">
+                    <%= trade.traded_at %>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-    <style>
-      .table {
-        border-spacing: 0 15px;
-      }
-
-      i {
-        font-size: 1rem !important;
-      }
-
-      .table tr {
-        border-radius: 20px;
-      }
-
-      tr td:nth-child(n+5),
-      tr th:nth-child(n+5) {
-        border-radius: 0 .625rem .625rem 0;
-      }
-
-      tr td:nth-child(1),
-      tr th:nth-child(1) {
-        border-radius: .625rem 0 0 .625rem;
-      }
-    </style>
     """
   end
 
