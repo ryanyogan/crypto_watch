@@ -34,8 +34,8 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crypto</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
-                  <th class="hidden sm:block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traded At</th>
+                  <th class="hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
+                  <th class="hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traded At</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
@@ -48,10 +48,10 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
                   <td class="px-6 py-4 whitespace-nowrap">
                     <%= trade.price %>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="hidden sm:inline-block px-6 py-4 whitespace-nowrap">
                     <%= trade.volume %>
                   </td>
-                  <td class="hidden sm:block px-6 py-4 whitespace-nowrap">
+                  <td class="hidden sm:inline-block px-6 py-4 whitespace-nowrap">
                     <%= trade.traded_at %>
                   </td>
                 </tr>
