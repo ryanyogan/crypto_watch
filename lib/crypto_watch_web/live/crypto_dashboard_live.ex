@@ -14,12 +14,12 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   def render(assigns) do
     ~L"""
     <div class="flex gap-x-2 flex-wrap">
-      <div class="mb-4">
-        <h1 class="font-semibold shadow:sm text-3xl text-gray-900">Crypto Watch</h1>
+      <div class="mb-4 m-auto">
+        <h1 class="font-semibold shadow:sm text-4xl text-gray-900">Crypto <span class="text-indigo-500">Watch</span></h1>
       </div>
       <div class="w-full">
       <form action="#" phx-change="add-product">
-        <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
           <option selected disabled>Add a Crypto Product</option>
           <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
             <optgroup label="<%= exchange_name %>">
@@ -35,10 +35,10 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
       </div>
     </div>
 
-    <div class="mt-8 flex flex-col">
+    <div class="mt-8 mb-8 flex flex-col">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
-          <div class="shadow overflow-hidden shadow-sm sm:rounded-sm">
+          <div class="shadow overflow-hidden shadow-sm sm:rounded-md">
             <table class="min-w-full divide-y divid-gray-200">
               <thead class="bg-gray-50">
                 <tr>
@@ -59,11 +59,11 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
                         />
                       </div>
                       <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-800">
-                          <%= fiat_character(product) %> <%= trade.price %>
+                        <div class="text-sm font-medium text-gray-900">
+                          <%= fiat_character(product) %><%= trade.price %>
                         </div>
                         <div class="text-sm text-gray-500">
-                          <%= trade.product.exchange_name %>
+                          <span class="text-indigo-500"><%= trade.product.exchange_name %></span>
                         </div>
                       </div>
                     </div>
