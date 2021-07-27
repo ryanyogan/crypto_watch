@@ -1,6 +1,7 @@
 defmodule CryptoWatchWeb.CryptoDashboardLive do
   use CryptoWatchWeb, :live_view
   alias CryptoWatch.Product
+  import CryptoWatchWeb.ProductHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,8 +14,12 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   def render(assigns) do
     ~L"""
     <div class="flex gap-x-2">
+      <div class="w-1/2">
+        <h1 class="font-semibold text-4xl text-gray-800">Crypto Watch</h1>
+      </div>
+      <div class="w-1/2">
       <form action="#" phx-change="add-product">
-        <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-lg focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
           <option selected disabled>Add a Crypto Product</option>
           <%= for product <- CryptoWatch.available_products() do %>
             <option value="<%= to_string(product) %>">
@@ -23,36 +28,44 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
           <% end %>
         </select>
       </form>
+      </div>
     </div>
 
-    <div class="mt-2 flex flex-col">
+    <div class="mt-8 flex flex-col">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
-          <div class="shadow overflow-hidden  shadow-sm sm:rounded-sm">
+          <div class="shadow overflow-hidden shadow-sm sm:rounded-sm">
             <table class="min-w-full divide-y divid-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="w-1/4 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crypto</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th class=" hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
-                  <th class=" hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traded At</th>
+                  <th class="w-1/2 px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Crypto</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Traded At</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <%= for product <- @products, trade = @trades[product], not is_nil(trade) do %>
                 <tr>
                   <td class="w-1/4 px-6 py-4 whitespace-nowrap">
-                    <%= trade.product.currency_pair %>
-                    <%= trade.product.exchange_name %>
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10">
+                        <img
+                          class="h-10 w-10 rounded-full"
+                          src="<%= crypto_icon(@socket, product) %>"
+                          alt=""
+                        />
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-800">
+                          <%= fiat_character(product) %> <%= trade.price %>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                          <%= trade.product.exchange_name %>
+                        </div>
+                      </div>
+                    </div>
                   </td>
-                  <td class="w-1/4 px-6 py-4 whitespace-nowrap">
-                    <%= trade.price %>
-                  </td>
-                  <td class="w-1/4 hidden sm:inline-block px-6 py-4 whitespace-nowrap">
-                    <%= trade.volume %>
-                  </td>
-                  <td class="w-1/4 hidden sm:inline-block px-6 py-4 whitespace-nowrap">
-                    <%= trade.traded_at %>
+                  <td class="w-1/2 font-medium text-gray-900 sm:inline-block px-6 py-6 whitespace-nowrap">
+                    <%= human_datetime(trade.traded_at) %>
                   </td>
                 </tr>
                 <% end %>
@@ -106,4 +119,9 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
       Map.put(trades, product, trade)
     end)
   end
+
+  # defp grouped_products_by_exchange_name do
+  #   CryptoWatch.available_products()
+  #   |> Enum.group_by(& &1.exchange_name)
+  # end
 end
