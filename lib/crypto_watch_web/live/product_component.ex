@@ -26,7 +26,7 @@ defmodule CryptoWatchWeb.ProductComponent do
   def render(%{trade: trade} = assigns) when not is_nil(trade) do
     ~L"""
     <tr>
-      <td class="w-1/4 px-6 py-4 whitespace-nowrap">
+      <td colspan="2" class="px-6 py-4 whitespace-nowrap">
         <div class="flex items-center">
           <div class="flex-shrink-0 h-10 w-10">
             <img
@@ -43,9 +43,18 @@ defmodule CryptoWatchWeb.ProductComponent do
               <span class="text-indigo-500"><%= @trade.product.exchange_name %></span>
             </div>
           </div>
+          <div class="ml-4"
+            data-price="<%= @trade.price %>"
+            data-traded-at="<%= DateTime.to_unix(@trade.traded_at, :millisecond) %>"
+            phx-hook="Chart"
+            phx-update="ignore"
+            id="product-chart-<%= to_string(@product) %>">
+            <div class="chart-container">
+            </div>
+          </div>
         </div>
       </td>
-      <td class=" font-medium text-sm text-gray-700 px-6 py-6 whitespace-nowrap">
+      <td class="font-medium text-sm text-gray-700 px-6 py-6 whitespace-nowrap text-right">
         <%= human_datetime(@trade.traded_at, @timezone) %>
       </td>
       <td class="font-bold text-md text-indigo-900 px-6 py-6 whitespace-nowrap text-right">

@@ -15,7 +15,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   def render(assigns) do
     ~L"""
     <div class="flex gap-x-2 flex-wrap">
-      <div class="mb-4 m-auto">
+      <div class="mb-6 m-auto">
         <h1 class="font-semibold shadow:sm text-4xl text-gray-900">Crypto <span class="text-indigo-500">Watch</span></h1>
       </div>
       <div class="w-full">
@@ -44,9 +44,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
             <table class="min-w-full divide-y divid-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="w-1/2 px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Crypto</th>
-                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Traded At</th>
-                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider"></th>
+                  <th colspan="4" class="w-1/2 px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Crypto</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
