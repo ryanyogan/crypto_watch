@@ -23,6 +23,12 @@ defmodule CryptoWatchWeb.ProductHelpers do
     end
   end
 
+  def to_price(price) do
+    {price, _} = Float.parse(price)
+
+    :erlang.float_to_binary(price, decimals: 2)
+  end
+
   def crypto_icon(conn, product) do
     crypto_symbol = crypto_symbol(product)
     relative_path = Path.join("/images/cryptos", "#{crypto_symbol}.svg")

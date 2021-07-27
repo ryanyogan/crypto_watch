@@ -35,6 +35,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
       </div>
     </div>
 
+    <!-- product component -->
     <div class="mt-8 mb-8 flex flex-col">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
@@ -44,34 +45,12 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
                 <tr>
                   <th class="w-1/2 px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Crypto</th>
                   <th class="px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Traded At</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider"></th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <%= for product <- @products, trade = @trades[product], not is_nil(trade) do %>
-                <tr>
-                  <td class="w-1/4 px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <img
-                          class="h-10 w-10 rounded-full"
-                          src="<%= crypto_icon(@socket, product) %>"
-                          alt=""
-                        />
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          <%= fiat_character(product) %><%= trade.price %>
-                        </div>
-                        <div class="text-sm text-gray-500">
-                          <span class="text-indigo-500"><%= trade.product.exchange_name %></span>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="w-1/2 font-medium text-gray-900 sm:inline-block px-6 py-6 whitespace-nowrap">
-                    <%= human_datetime(trade.traded_at) %>
-                  </td>
-                </tr>
+                <%= for product <- @products do %>
+                  <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product %>
                 <% end %>
               </tbody>
             </table>
@@ -79,15 +58,17 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
         </div>
       </div>
     </div>
+    <!-- // End product component -->
     """
   end
 
   @impl true
   def handle_info({:new_trade, trade}, socket) do
-    socket =
-      update(socket, :trades, fn trades ->
-        Map.put(trades, trade.product, trade)
-      end)
+    send_update(
+      CryptoWatchWeb.ProductComponent,
+      id: trade.product,
+      trade: trade
+    )
 
     {:noreply, socket}
   end
@@ -103,6 +84,18 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     product = Product.new(exchange_name, currency_pair)
     socket = maybe_add_product(socket, product)
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("remove-product", %{"product-id" => product_id}, socket) do
+    product = product_from_string(product_id)
+    socket = update(socket, :products, &List.delete(&1, product))
+    {:noreply, socket}
+  end
+
+  defp product_from_string(product_id) do
+    [exchange_name, currency_pair] = String.split(product_id, ":")
+    Product.new(exchange_name, currency_pair)
   end
 
   defp maybe_add_product(socket, product) do
