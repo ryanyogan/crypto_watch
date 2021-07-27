@@ -14,7 +14,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     ~L"""
     <div class="flex gap-x-2">
       <form action="#" phx-change="add-product">
-        <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-lg focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
           <option selected disabled>Add a Crypto Product</option>
           <%= for product <- CryptoWatch.available_products() do %>
             <option value="<%= to_string(product) %>">
@@ -26,32 +26,32 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     </div>
 
     <div class="mt-2 flex flex-col">
-      <div class="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
+      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
-          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <div class="shadow overflow-hidden  shadow-sm sm:rounded-sm">
             <table class="min-w-full divide-y divid-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crypto</th>
+                  <th class="w-1/4 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crypto</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th class="hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
-                  <th class="hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traded At</th>
+                  <th class=" hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
+                  <th class=" hidden sm:inline-block px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traded At</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <%= for product <- @products, trade = @trades[product], not is_nil(trade) do %>
                 <tr>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="w-1/4 px-6 py-4 whitespace-nowrap">
                     <%= trade.product.currency_pair %>
                     <%= trade.product.exchange_name %>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="w-1/4 px-6 py-4 whitespace-nowrap">
                     <%= trade.price %>
                   </td>
-                  <td class="hidden sm:inline-block px-6 py-4 whitespace-nowrap">
+                  <td class="w-1/4 hidden sm:inline-block px-6 py-4 whitespace-nowrap">
                     <%= trade.volume %>
                   </td>
-                  <td class="hidden sm:inline-block px-6 py-4 whitespace-nowrap">
+                  <td class="w-1/4 hidden sm:inline-block px-6 py-4 whitespace-nowrap">
                     <%= trade.traded_at %>
                   </td>
                 </tr>
