@@ -13,25 +13,25 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="flex gap-x-2">
-      <div class="w-1/2">
-        <h1 class="font-semibold text-4xl text-gray-800">Crypto Watch</h1>
+    <div class="flex gap-x-2 flex-wrap">
+      <div class="mb-4">
+        <h1 class="font-semibold shadow:sm text-3xl text-gray-900">Crypto Watch</h1>
       </div>
-      <div class="w-1/2">
+      <div class="w-full">
       <form action="#" phx-change="add-product">
-      <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-        <option selected disabled>Add a Crypto Product</option>
-        <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
-          <optgroup label="<%= exchange_name %>">
-            <%= for product <- products do %>
-              <option value="<%= to_string(product) %>">
-                <%= crypto_name(product) %> - <%= fiat_character(product) %>
-              </option>
-            <% end %>
-          </optgroup>
-        <% end %>
-          </select>
-      </form>
+        <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-md focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option selected disabled>Add a Crypto Product</option>
+          <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
+            <optgroup label="<%= exchange_name %>">
+              <%= for product <- products do %>
+                <option value="<%= to_string(product) %>">
+                  <%= crypto_name(product) %> - <%= fiat_character(product) %>
+                </option>
+              <% end %>
+            </optgroup>
+          <% end %>
+            </select>
+        </form>
       </div>
     </div>
 
