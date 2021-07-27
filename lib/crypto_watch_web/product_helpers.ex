@@ -35,8 +35,10 @@ defmodule CryptoWatchWeb.ProductHelpers do
     CryptoWatchWeb.Router.Helpers.static_path(conn, relative_path)
   end
 
-  def human_datetime(datetime) do
-    Calendar.strftime(datetime, "%I:%M:%S %p")
+  def human_datetime(datetime, timezone \\ "UTC") do
+    datetime
+    |> DateTime.shift_zone!(timezone)
+    |> Calendar.strftime("%I:%M:%S %p")
   end
 
   defp crypto_and_fiat_symbols(%{exchange_name: "coinbase"} = product) do

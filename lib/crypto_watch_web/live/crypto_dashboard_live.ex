@@ -7,7 +7,8 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(trades: %{}, products: [])}
+     |> assign(trades: %{}, products: [])
+     |> assign(timezone: get_timezone_from_connection(socket))}
   end
 
   @impl true
@@ -50,7 +51,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <%= for product <- @products do %>
-                  <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product %>
+                  <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product, timezone: @timezone %>
                 <% end %>
               </tbody>
             </table>
@@ -120,5 +121,12 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   defp grouped_products_by_exchange_name do
     CryptoWatch.available_products()
     |> Enum.group_by(& &1.exchange_name)
+  end
+
+  defp get_timezone_from_connection(socket) do
+    case get_connect_params(socket) do
+      %{"timezone" => tz} when not is_nil(tz) -> tz
+      _ -> "UTC"
+    end
   end
 end
