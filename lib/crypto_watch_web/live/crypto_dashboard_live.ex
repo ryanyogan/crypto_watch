@@ -19,14 +19,18 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
       </div>
       <div class="w-1/2">
       <form action="#" phx-change="add-product">
-        <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-          <option selected disabled>Add a Crypto Product</option>
-          <%= for product <- CryptoWatch.available_products() do %>
-            <option value="<%= to_string(product) %>">
-              <%= product.exchange_name %> - <%= product.currency_pair %>
-            </option>
-          <% end %>
-        </select>
+      <select name="product_id" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        <option selected disabled>Add a Crypto Product</option>
+        <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
+          <optgroup label="<%= exchange_name %>">
+            <%= for product <- products do %>
+              <option value="<%= to_string(product) %>">
+                <%= crypto_name(product) %> - <%= fiat_character(product) %>
+              </option>
+            <% end %>
+          </optgroup>
+        <% end %>
+          </select>
       </form>
       </div>
     </div>
@@ -120,8 +124,8 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     end)
   end
 
-  # defp grouped_products_by_exchange_name do
-  #   CryptoWatch.available_products()
-  #   |> Enum.group_by(& &1.exchange_name)
-  # end
+  defp grouped_products_by_exchange_name do
+    CryptoWatch.available_products()
+    |> Enum.group_by(& &1.exchange_name)
+  end
 end
