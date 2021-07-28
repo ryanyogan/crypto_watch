@@ -30,8 +30,8 @@ export const ChartHook = {
 };
 
 const plotOptions = () => ({
-  width: 150,
-  height: 30,
+  width: 230,
+  height: 35,
   class: "chart-container",
   cursor: { show: false },
   select: { show: false },
