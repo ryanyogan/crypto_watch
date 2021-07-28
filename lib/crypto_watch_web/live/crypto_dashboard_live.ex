@@ -14,29 +14,30 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="flex gap-x-2 flex-wrap">
-      <div class="mb-6 m-auto">
-        <h1 class="font-semibold shadow:sm text-4xl text-gray-900">Crypto <span class="text-indigo-500">Watch</span></h1>
-      </div>
-      <div class="w-full">
-      <form action="#" phx-change="add-product">
-        <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-          <option selected disabled>Add a Crypto Product</option>
-          <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
-            <optgroup label="<%= exchange_name %>">
-              <%= for product <- products do %>
-                <option value="<%= to_string(product) %>">
-                  <%= crypto_name(product) %> - <%= fiat_character(product) %>
-                </option>
-              <% end %>
-            </optgroup>
-          <% end %>
-            </select>
+    <h1 class="font-semibold shadow:sm text-4xl text-gray-900">Crypto <span class="text-indigo-500">Watch</span></h1>
+
+    <div class="flex gap-x-2 flex-wrap mt-6">
+      <div class="w-full flex-1">
+        <form action="#" phx-submit="add-product">
+          <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option selected disabled>Add a Crypto Product</option>
+            <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
+              <optgroup label="<%= exchange_name %>">
+                <%= for product <- products do %>
+                  <option value="<%= to_string(product) %>">
+                    <%= crypto_name(product) %> - <%= fiat_character(product) %>
+                  </option>
+                <% end %>
+              </optgroup>
+            <% end %>
+          </select>
+          </div>
+          <div class="flex-1">
+            <button type="submit" class="mt-1 shadow-md text-indigo-500 bg-white py-2 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add selected</button>
+          </div>
         </form>
       </div>
-    </div>
 
-    <!-- product component -->
     <div class="mt-8 mb-8 flex flex-col">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
@@ -57,7 +58,6 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
         </div>
       </div>
     </div>
-    <!-- // End product component -->
     """
   end
 
