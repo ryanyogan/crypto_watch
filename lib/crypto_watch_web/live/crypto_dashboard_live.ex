@@ -20,22 +20,24 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
       <% end %>
     </div>
 
-    <div class="mx-5 sm:mx-20 my-10">
-      <form action="#" phx-submit="add-product">
-        <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-          <option selected disabled>Currencies</option>
-          <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
-            <optgroup label="<%= exchange_name %>">
-              <%= for product <- products do %>
-                <option value="<%= to_string(product) %>">
-                  <%= crypto_name(product) %> - <%= fiat_character(product) %>
-                </option>
-              <% end %>
-            </optgroup>
-          <% end %>
-        </select>
-        <button type="submit" class="mt-1 shadow-lg hover:bg-indigo-400 text-white font-semibold bg-indigo-500 py-2 block w-full border-gray-900 rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add</button>
-      </form>
+    <div class="shadow-xl bg-white">
+      <div class="card-body">
+        <form action="#" phx-submit="add-product">
+          <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option selected disabled>Currencies</option>
+            <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
+              <optgroup label="<%= exchange_name %>">
+                <%= for product <- products do %>
+                  <option value="<%= to_string(product) %>">
+                    <%= crypto_name(product) %> - <%= fiat_character(product) %>
+                  </option>
+                <% end %>
+              </optgroup>
+            <% end %>
+          </select>
+          <button type="submit" class="mt-1 shadow-lg hover:bg-indigo-400 text-white font-semibold bg-indigo-500 py-2 block w-full border-gray-900 rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add</button>
+        </form>
+      </div>
     </div>
     """
   end

@@ -25,9 +25,7 @@ defmodule CryptoWatchWeb.ProductComponent do
   @impl true
   def render(%{trade: trade} = assigns) when not is_nil(trade) do
     ~L"""
-      <div class="card shadow-2xl lg:card-side bg-primary text-primary-content sm:m-2 my-2">
-        <div class="card-body">
-          <div class="shadow stats">
+          <div class="shadow-lg stats m-2 sm:m-5 w-full sm:w-2/3 sm:w-auto">
             <div class="stat">
               <div class="stat-figure">
                 <div class="flex-shrink-0 h-10 w-10">
@@ -56,16 +54,6 @@ defmodule CryptoWatchWeb.ProductComponent do
               </div>
             </div>
           </div>
-          <div class="justify-end">
-          <div class="mt-5"
-            data-price="<%= @trade.price %>"
-            data-traded-at="<%= DateTime.to_unix(@trade.traded_at, :millisecond) %>"
-            phx-hook="Chart"
-            phx-update="ignore"
-            id="product-chart-<%= to_string(@product) %>">
-              <div class="chart-container"></div>
-          </div>
-        </div>
       </div>
     """
   end
