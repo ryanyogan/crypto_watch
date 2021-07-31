@@ -25,92 +25,88 @@ defmodule CryptoWatchWeb.ProductComponent do
   @impl true
   def render(%{trade: trade} = assigns) when not is_nil(trade) do
     ~L"""
-    <tr>
-      <td colspan="2" class="px-6 py-4 whitespace-nowrap">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 h-10 w-10">
-            <img
-              class="h-10 w-10 rounded-full"
-              src="<%= crypto_icon(@socket, @product) %>"
-              alt=""
-            />
-          </div>
-          <div class="ml-4">
-            <div class="text-sm font-medium text-gray-900">
-              <span class="text-indigo-500 my-1"><%= fiat_character(@product) %></span><%= to_price(@trade.price) %>
+      <div class="card shadow-2xl lg:card-side bg-primary text-primary-content sm:m-2 my-2">
+        <div class="card-body">
+          <div class="shadow stats">
+            <div class="stat">
+              <div class="stat-figure">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <img
+                    class="h-10 w-10 rounded-full"
+                    src="<%= crypto_icon(@socket, @product) %>"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div class="stat-title">
+                <div class="text-sm font-medium text-gray-900">
+                  <%= crypto_name(@product) %> on
+                  <span class="text-indigo-500"><%= @product.exchange_name %></span>
+                </div>
+              </div>
+              <div class="stat-value">
+                <div class="text-md font-medium text-gray-900">
+                  <span class="text-indigo-500 my-1"><%= fiat_character(@product) %></span><%= to_price(@trade.price) %></span>
+                </div>
+              </div>
+              <div class="stat-desc">
+                <div class="text-sm font-medium text-gray-800">
+                  <%= human_datetime(@trade.traded_at, @timezone) %>
+                </div>
+              </div>
             </div>
-            <div class="text-sm text-gray-500">
-              <span class="text-indigo-500"><%= @trade.product.exchange_name %></span>
-            </div>
           </div>
-          <div class="ml-4 hidden sm:inline-block"
+          <div class="justify-end">
+          <div class="mt-5"
             data-price="<%= @trade.price %>"
             data-traded-at="<%= DateTime.to_unix(@trade.traded_at, :millisecond) %>"
             phx-hook="Chart"
             phx-update="ignore"
             id="product-chart-<%= to_string(@product) %>">
-            <div class="chart-container">
-            </div>
+              <div class="chart-container"></div>
           </div>
         </div>
-      </td>
-      <td class="font-medium text-sm text-gray-700 whitespace-nowrap">
-        <div class="flex items-center">
-          <div class="ml-4">
-            <div class="text-sm text-gray-500">
-              Last updated at
-            </div>
-            <div class="text-sm font-medium text-gray-800">
-              <%= human_datetime(@trade.traded_at, @timezone) %>
-            </div>
-          </div>
-      </td>
-      <td class="font-bold text-md text-indigo-900 px-6 py-6 whitespace-nowrap">
-        <div class="flex items-center">
-          <div class="ml-4">
-            <div class="text-sm font-medium text-indigo-500">
-              <a href="#">More
-            </div>
-            <div class="text-sm font-medium text-gray-800">
-              <a href="#" class="text-indigo-500"
-                      phx-click="remove-product"
-                      phx-value-product-id="<%= to_string(@product) %>"
-              >Remove</a>
-            </div>
-          </div>
-      </td>
-    </tr>
+      </div>
     """
   end
 
   @impl true
   def render(assigns) do
     ~L"""
-    <tr>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 h-10 w-10">
-            <img
-              class="h-10 w-10 rounded-full"
-              src="<%= crypto_icon(@socket, @product) %>"
-              alt=""
-            />
+      <div class="card shadow-2xl lg:card-side bg-primary text-primary-content m-2">
+        <div class="card-body">
+          <div class="shadow stats">
+            <div class="stat">
+              <div class="stat-figure">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <img
+                    class="h-10 w-10 rounded-full"
+                    src="<%= crypto_icon(@socket, @product) %>"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div class="stat-title">
+                <div class="text-sm font-medium text-gray-900">
+                  <%= crypto_name(@product) %> on
+                  <span class="text-indigo-500"><%= @product.exchange_name %></span>
+                </div>
+              </div>
+              <div class="stat-value">
+                <div class="text-md font-medium text-gray-900">
+                  <span class="text-indigo-500 my-1">....</span>
+                </div>
+              </div>
+              <div class="stat-desc">
+                <div class="text-sm font-medium text-gray-800">
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="ml-4">
-            <div class="text-sm font-medium text-gray-900">
-              <%= fiat_character(@product) %><span class="px-1 text-gray-400 font-medium font-xs">...</span>
-            </div>
-            <div class="text-sm text-gray-500">
-              <span class="text-indigo-500"><%= @product.exchange_name %></span>
-            </div>
+          <div class="justify-end">
           </div>
         </div>
-      </td>
-      <td class="font-medium text-gray-900 sm:inline-block px-6 py-6 whitespace-nowrap">
-        <span class="px-2 text-gray-400 font-medium font-xs">awaiting updates...</span>
-      </td>
-      <td></td>
-    </tr>
+      </div>
     """
   end
 end

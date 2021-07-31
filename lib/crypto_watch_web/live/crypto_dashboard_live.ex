@@ -14,50 +14,28 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <h1 class="font-semibold shadow:sm text-4xl text-gray-900">Crypto<span class="text-indigo-500">Watch</span></h1>
+    <div class="flex flex-wrap justify-center">
+      <%= for product <- @products do %>
+        <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product, timezone: @timezone %>
+      <% end %>
+    </div>
 
-    <div class="flex gap-x-2 flex-wrap mt-6">
-      <div class="w-full flex-1">
-        <form action="#" phx-submit="add-product">
-          <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-            <option selected disabled>Currencies</option>
-            <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
-              <optgroup label="<%= exchange_name %>">
-                <%= for product <- products do %>
-                  <option value="<%= to_string(product) %>">
-                    <%= crypto_name(product) %> - <%= fiat_character(product) %>
-                  </option>
-                <% end %>
-              </optgroup>
-            <% end %>
-          </select>
-          </div>
-          <div class="flex-1">
-            <button type="submit" class="mt-1 shadow-md text-indigo-500 font-semibold bg-white py-2 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add Currency</button>
-          </div>
-        </form>
-      </div>
-
-
-    <div class="mt-8 mb-8 flex flex-col">
-      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-y">
-          <div class="shadow overflow-hidden shadow-sm sm:rounded-md">
-            <table class="min-w-full divide-y divid-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th colspan="4" class="px-6 py-3 text-left text-sm font-medium text-gray-800 uppercase tracking-wider">Currencies</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <%= for product <- @products do %>
-                  <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product, timezone: @timezone %>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    <div class="mx-5 sm:mx-20 my-10">
+      <form action="#" phx-submit="add-product">
+        <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option selected disabled>Currencies</option>
+          <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
+            <optgroup label="<%= exchange_name %>">
+              <%= for product <- products do %>
+                <option value="<%= to_string(product) %>">
+                  <%= crypto_name(product) %> - <%= fiat_character(product) %>
+                </option>
+              <% end %>
+            </optgroup>
+          <% end %>
+        </select>
+        <button type="submit" class="mt-1 shadow-lg hover:bg-indigo-400 text-white font-semibold bg-indigo-500 py-2 block w-full border-gray-900 rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add</button>
+      </form>
     </div>
     """
   end
