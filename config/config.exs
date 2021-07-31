@@ -16,3 +16,5 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 import_config "#{Mix.env()}.exs"
+
+import_config "appsignal.exs"

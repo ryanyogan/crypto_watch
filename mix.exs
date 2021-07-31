@@ -40,7 +40,9 @@ defmodule CryptoWatch.MixProject do
       {:gun, "~> 1.3"},
       {:tzdata, "~> 1.1"},
       {:cowlib, "~> 2.9.1", override: true},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:appsignal, "~> 2.0"},
+      {:appsignal_phoenix, "~> 2.0.0"}
     ]
   end
 

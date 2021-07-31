@@ -7,3 +7,5 @@ config :crypto_watch, CryptoWatchWeb.Endpoint,
 config :logger, level: :info
 
 import_config "prod.secret.exs"
+
+config :appsignal, :config, active: true
