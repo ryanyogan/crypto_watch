@@ -15,6 +15,11 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   end
 
   @impl true
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
   def render(assigns) do
     ~L"""
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
@@ -38,9 +43,13 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
 
   @impl true
   def handle_info({:add_product, product_id}, socket) do
-    [exchange_name, currency_pair] = String.split(product_id, ":")
-    product = Product.new(exchange_name, currency_pair)
-    socket = maybe_add_product(socket, product)
+    product = product_from_string(product_id)
+
+    socket =
+      socket
+      |> maybe_add_product(product)
+      |> update_product_params()
+
     {:noreply, socket}
   end
 
@@ -52,13 +61,23 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   @impl true
   def handle_event("remove-product", %{"product-id" => product_id}, socket) do
     product = product_from_string(product_id)
-    socket = update(socket, :products, &List.delete(&1, product))
+
+    socket =
+      socket
+      |> update(:products, &List.delete(&1, product))
+      |> update_product_params()
+
     {:noreply, socket}
   end
 
   @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
+  end
+
+  defp update_product_params(socket) do
+    product_ids = Enum.map(socket.assigns.products, &to_string/1)
+    push_patch(socket, to: Routes.live_path(socket, __MODULE__, products: product_ids))
   end
 
   defp product_from_string(product_id) do

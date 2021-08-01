@@ -22,8 +22,8 @@ defmodule CryptoWatchWeb.NavbarComponent do
               <div tabindex="0" class="btn btn-ghost rounded-btn text-xs sm:text-md">Add Currencies</div>
               <ul class="shadow-xl menu dropdown-content bg-base-100 w-52 text-gray-800">
                 <%= for product <- @products do %>
-                  <li class="text-gray-800 font-semibold pointer" phx-click="add-product" phx-target="<%= @myself %>" phx-value-product-id="<%= to_string(product) %>"">
-                    <a href="#"><%= crypto_name(product) %> - <%= fiat_character(product) %></a>
+                  <li class="text-gray-800 font-semibold cursor-pointer">
+                    <a href="#" phx-capture-click="add-product" phx-target="<%= @myself %>" phx-value-product-id="<%= to_string(product) %>"><%= crypto_name(product) %> - <%= fiat_character(product) %></a>
                   </li>
                 <% end %>
               </ul>
