@@ -38,8 +38,8 @@ defmodule CryptoWatchWeb.ProductComponent do
           </div>
           <div class="stat-title">
             <div class="text-sm font-medium text-gray-900">
-              <%= crypto_name(@product) %> on
-              <span class="text-indigo-500"><%= @product.exchange_name %></span>
+              <span class="font-bold text-gray-900"><%= crypto_name(@product) %> on</span>
+              <span class="text-indigo-500 font-bold"><%= @product.exchange_name %></span>
             </div>
           </div>
           <div class="stat-value">
@@ -49,7 +49,7 @@ defmodule CryptoWatchWeb.ProductComponent do
           </div>
           <div class="stat-desc">
             <div class="text-sm font-medium text-gray-800">
-              <%= human_datetime(@trade.traded_at, @timezone) %>
+              <span class="text-sm text-gray-700">Updated at </span> <%= human_datetime(@trade.traded_at, @timezone) %>
             </div>
           </div>
         </div>

@@ -107,32 +107,9 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     {:noreply, socket}
   end
 
-  defp update_product_params(socket) do
-    product_ids = Enum.map(socket.assigns.products, &to_string/1)
-    push_patch(socket, to: Routes.live_path(socket, __MODULE__, products: product_ids))
-  end
-
-  defp add_products_from_params(socket, %{"products" => product_ids}) when is_list(product_ids) do
-    products = Enum.map(product_ids, &product_from_string/1)
-
-    Enum.reduce(products, socket, fn product, socket ->
-      maybe_add_product(socket, product)
-    end)
-  end
-
-  defp add_products_from_params(socket, _params), do: socket
-
   defp product_from_string(product_id) do
     [exchange_name, currency_pair] = String.split(product_id, ":")
     Product.new(exchange_name, currency_pair)
-  end
-
-  defp maybe_add_product(socket, product) do
-    if product not in socket.assigns.products do
-      add_product(socket, product)
-    else
-      socket
-    end
   end
 
   defp add_product(socket, product) do
@@ -148,11 +125,6 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     socket
     |> update(:products, &(&1 -- [product]))
   end
-
-  # defp grouped_products_by_exchange_name do
-  #   CryptoWatch.available_products()
-  #   |> Enum.group_by(& &1.exchange_name)
-  # end
 
   defp get_timezone_from_connection(socket) do
     case get_connect_params(socket) do

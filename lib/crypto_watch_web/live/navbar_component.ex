@@ -12,9 +12,9 @@ defmodule CryptoWatchWeb.NavbarComponent do
   @impl true
   def render(assigns) do
     ~L"""
-      <div class="navbar mb-8 shadow-2xl bg-gray-900 text-neutral-content">
+      <div class="navbar mb-3 shadow-lg bg-gray-900 text-neutral-content">
         <div class="flex-1 px-2 mx-2">
-          <p class="sm:text-4xl text-xl font-bold text-gray-100">Crypto <span class="text-indigo-400">Watch</span></p>
+          <p class="sm:text-2xl text-xl font-bold text-white">Crypto<span class="text-blue-500">Watch</span></p>
         </div>
         <div class="flex justify-end flex-1 px-2">
           <div class="flex items-stretch">
