@@ -13,12 +13,7 @@
       <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     </head>
     <body class="bg-gray-100">
-      <div class="navbar mb-2 shadow-md bg-gray-700 text-neutral-content">
-        <div class="flex-1 px-2 mx-2">
-          <p class="sm:text-4xl text-xl font-bold text-gray-100">Crypto<span class="text-indigo-400">Watch</span></p>
-        </div>
-      </div>
-      <main class="container mx-auto bg-gray-100">
+      <main class="m-auto h-screen">
         <%= @inner_content %>
       </main>
     </body>

@@ -1,3 +1,4 @@
-<main role="main">
+<%= live_component @socket, CryptoWatchWeb.NavbarComponent, id: :navbar %>
+<main role="main" class="container m-auto h-full">
   <%= @inner_content %>
 </main>

@@ -1,10 +1,13 @@
 defmodule CryptoWatchWeb.CryptoDashboardLive do
   use CryptoWatchWeb, :live_view
   alias CryptoWatch.Product
-  import CryptoWatchWeb.ProductHelpers
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(CryptoWatch.PubSub, "navbar-actions")
+    end
+
     {:ok,
      socket
      |> assign(trades: %{}, products: [])
@@ -14,30 +17,10 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="flex flex-wrap justify-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
       <%= for product <- @products do %>
         <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product, timezone: @timezone %>
       <% end %>
-    </div>
-
-    <div class="shadow-xl bg-white">
-      <div class="card-body">
-        <form action="#" phx-submit="add-product">
-          <select name="product_id" class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-            <option selected disabled>Currencies</option>
-            <%= for {exchange_name, products} <- grouped_products_by_exchange_name() do %>
-              <optgroup label="<%= exchange_name %>">
-                <%= for product <- products do %>
-                  <option value="<%= to_string(product) %>">
-                    <%= crypto_name(product) %> - <%= fiat_character(product) %>
-                  </option>
-                <% end %>
-              </optgroup>
-            <% end %>
-          </select>
-          <button type="submit" class="mt-1 shadow-lg hover:bg-indigo-400 text-white font-semibold bg-indigo-500 py-2 block w-full border-gray-900 rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add</button>
-        </form>
-      </div>
     </div>
     """
   end
@@ -54,12 +37,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   end
 
   @impl true
-  def handle_event("clear", _params, socket) do
-    {:noreply, assign(socket, :trades, %{})}
-  end
-
-  @impl true
-  def handle_event("add-product", %{"product_id" => product_id}, socket) do
+  def handle_info({:add_product, product_id}, socket) do
     [exchange_name, currency_pair] = String.split(product_id, ":")
     product = Product.new(exchange_name, currency_pair)
     socket = maybe_add_product(socket, product)
@@ -67,9 +45,19 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   end
 
   @impl true
+  def handle_event("clear", _params, socket) do
+    {:noreply, assign(socket, :trades, %{})}
+  end
+
+  @impl true
   def handle_event("remove-product", %{"product-id" => product_id}, socket) do
     product = product_from_string(product_id)
     socket = update(socket, :products, &List.delete(&1, product))
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event(_, _, socket) do
     {:noreply, socket}
   end
 
@@ -97,10 +85,10 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     end)
   end
 
-  defp grouped_products_by_exchange_name do
-    CryptoWatch.available_products()
-    |> Enum.group_by(& &1.exchange_name)
-  end
+  # defp grouped_products_by_exchange_name do
+  #   CryptoWatch.available_products()
+  #   |> Enum.group_by(& &1.exchange_name)
+  # end
 
   defp get_timezone_from_connection(socket) do
     case get_connect_params(socket) do
