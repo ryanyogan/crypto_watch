@@ -11,7 +11,7 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
 
     {:ok,
      socket
-     |> assign(trades: %{}, products: [])
+     |> assign(products: [])
      |> assign(timezone: get_timezone_from_connection(socket))}
   end
 
@@ -39,17 +39,6 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   def handle_params(params, _uri, socket) do
     Logger.debug("Unhandled paramss: #{inspect(params)}")
     {:noreply, socket}
-  end
-
-  @impl true
-  def render(assigns) do
-    ~L"""
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-      <%= for product <- @products do %>
-        <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product, timezone: @timezone %>
-      <% end %>
-    </div>
-    """
   end
 
   @impl true
@@ -115,8 +104,14 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   defp add_product(socket, product) do
     CryptoWatch.subscribe_to_trades(product)
 
-    socket
-    |> update(:products, &(&1 ++ [product]))
+    case product in socket.assigns.products do
+      true ->
+        socket
+
+      _ ->
+        socket
+        |> update(:products, &(&1 ++ [product]))
+    end
   end
 
   defp remove_product(socket, product) do

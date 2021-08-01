@@ -1,0 +1,5 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 md:mx-3">
+  <%= for product <- @products do %>
+    <%= live_component @socket, CryptoWatchWeb.ProductComponent, id: product, timezone: @timezone %>
+  <% end %>
+</div>

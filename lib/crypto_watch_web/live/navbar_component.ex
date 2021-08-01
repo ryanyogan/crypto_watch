@@ -41,7 +41,6 @@ defmodule CryptoWatchWeb.NavbarComponent do
             </div>
           </div>
         </div>
-      </div>
     """
   end
 
@@ -59,6 +58,5 @@ defmodule CryptoWatchWeb.NavbarComponent do
   def products_grouped_by_currency do
     CryptoWatch.available_products()
     |> Enum.group_by(fn product -> fiat_symbol(product) end)
-    |> IO.inspect()
   end
 end
