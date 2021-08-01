@@ -61,40 +61,36 @@ defmodule CryptoWatchWeb.ProductComponent do
   @impl true
   def render(assigns) do
     ~L"""
-      <div class="card shadow-2xl lg:card-side bg-primary text-primary-content m-2">
-        <div class="card-body">
-          <div class="shadow stats">
-            <div class="stat">
-              <div class="stat-figure">
-                <div class="flex-shrink-0 h-10 w-10">
-                  <img
-                    class="h-10 w-10 rounded-full"
-                    src="<%= crypto_icon(@socket, @product) %>"
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div class="stat-title">
-                <div class="text-sm font-medium text-gray-900">
-                  <%= crypto_name(@product) %> on
-                  <span class="text-indigo-500"><%= @product.exchange_name %></span>
-                </div>
-              </div>
-              <div class="stat-value">
-                <div class="text-md font-medium text-gray-900">
-                  <span class="text-indigo-500 my-1">....</span>
-                </div>
-              </div>
-              <div class="stat-desc">
-                <div class="text-sm font-medium text-gray-800">
-                </div>
-              </div>
+      <div class="shadow-md m-2 sm:m-2">
+        <div class="stat bg-gray-100">
+          <div class="stat-figure">
+            <div class="flex-shrink-0 h-10 w-10">
+              <img
+                class="h-10 w-10 rounded-full"
+                src="<%= crypto_icon(@socket, @product) %>"
+                alt=""
+              />
             </div>
           </div>
-          <div class="justify-end">
+          <div class="stat-title">
+            <div class="text-sm font-medium text-gray-900">
+              <%= crypto_name(@product) %> on
+              <span class="text-indigo-500"><%= @product.exchange_name %></span>
+            </div>
+          </div>
+          <div class="stat-value">
+            <div class="text-md font-medium text-gray-900">
+              <span class="text-indigo-500 my-1"><%= fiat_character(@product) %> ...</span>
+            </div>
+          </div>
+          <div class="stat-desc">
+            <div class="text-sm font-medium text-gray-800">
+              ...
+            </div>
           </div>
         </div>
       </div>
+    </div>
     """
   end
 end

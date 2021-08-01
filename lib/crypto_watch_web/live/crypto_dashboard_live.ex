@@ -1,6 +1,7 @@
 defmodule CryptoWatchWeb.CryptoDashboardLive do
   use CryptoWatchWeb, :live_view
   alias CryptoWatch.Product
+  require Logger
 
   @impl true
   def mount(_params, _session, socket) do
@@ -15,7 +16,28 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
   end
 
   @impl true
-  def handle_params(_params, _uri, socket) do
+  def handle_params(%{"products" => product_ids}, _uri, socket) do
+    new_products = Enum.map(product_ids, &product_from_string/1)
+    diff = List.myers_difference(socket.assigns.products, new_products)
+    products_to_remove = diff |> Keyword.get_values(:del) |> List.flatten()
+    products_to_insert = diff |> Keyword.get_values(:ins) |> List.flatten()
+
+    socket =
+      Enum.reduce(products_to_remove, socket, fn product, socket ->
+        remove_product(socket, product)
+      end)
+
+    socket =
+      Enum.reduce(products_to_insert, socket, fn product, socket ->
+        add_product(socket, product)
+      end)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_params(params, _uri, socket) do
+    Logger.debug("Unhandled paramss: #{inspect(params)}")
     {:noreply, socket}
   end
 
@@ -43,12 +65,17 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
 
   @impl true
   def handle_info({:add_product, product_id}, socket) do
-    product = product_from_string(product_id)
+    product_ids =
+      socket.assigns.products
+      |> Enum.map(&to_string/1)
+      |> Kernel.++([product_id])
+      |> Enum.uniq()
 
     socket =
-      socket
-      |> maybe_add_product(product)
-      |> update_product_params()
+      push_patch(
+        socket,
+        to: Routes.live_path(socket, __MODULE__, products: product_ids)
+      )
 
     {:noreply, socket}
   end
@@ -60,12 +87,17 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
 
   @impl true
   def handle_event("remove-product", %{"product-id" => product_id}, socket) do
-    product = product_from_string(product_id)
+    product_ids =
+      socket.assigns.products
+      |> Enum.map(&to_string/1)
+      |> Kernel.--([product_id])
+      |> Enum.uniq()
 
     socket =
-      socket
-      |> update(:products, &List.delete(&1, product))
-      |> update_product_params()
+      push_patch(
+        socket,
+        to: Routes.live_path(socket, __MODULE__, products: product_ids)
+      )
 
     {:noreply, socket}
   end
@@ -79,6 +111,16 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     product_ids = Enum.map(socket.assigns.products, &to_string/1)
     push_patch(socket, to: Routes.live_path(socket, __MODULE__, products: product_ids))
   end
+
+  defp add_products_from_params(socket, %{"products" => product_ids}) when is_list(product_ids) do
+    products = Enum.map(product_ids, &product_from_string/1)
+
+    Enum.reduce(products, socket, fn product, socket ->
+      maybe_add_product(socket, product)
+    end)
+  end
+
+  defp add_products_from_params(socket, _params), do: socket
 
   defp product_from_string(product_id) do
     [exchange_name, currency_pair] = String.split(product_id, ":")
@@ -97,11 +139,14 @@ defmodule CryptoWatchWeb.CryptoDashboardLive do
     CryptoWatch.subscribe_to_trades(product)
 
     socket
-    |> update(:products, fn products -> products ++ [product] end)
-    |> update(:trades, fn trades ->
-      trade = CryptoWatch.get_last_trade(product)
-      Map.put(trades, product, trade)
-    end)
+    |> update(:products, &(&1 ++ [product]))
+  end
+
+  defp remove_product(socket, product) do
+    CryptoWatch.unsubscribe_to_trades(product)
+
+    socket
+    |> update(:products, &(&1 -- [product]))
   end
 
   # defp grouped_products_by_exchange_name do
