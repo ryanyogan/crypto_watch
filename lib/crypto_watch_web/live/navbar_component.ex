@@ -6,7 +6,7 @@ defmodule CryptoWatchWeb.NavbarComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> assign(products: CryptoWatch.available_products())}
+     |> assign(products: products_grouped_by_currency())}
   end
 
   @impl true
@@ -19,11 +19,22 @@ defmodule CryptoWatchWeb.NavbarComponent do
         <div class="flex justify-end flex-1 px-2">
           <div class="flex items-stretch">
             <div class="dropdown dropdown-end">
-              <div tabindex="0" class="btn btn-ghost rounded-btn text-xs sm:text-md">Add Currencies</div>
-              <ul class="shadow-xl menu dropdown-content bg-base-100 w-52 text-gray-800">
-                <%= for product <- @products do %>
-                  <li class="text-gray-800 font-semibold cursor-pointer">
-                    <a href="#" phx-capture-click="add-product" phx-target="<%= @myself %>" phx-value-product-id="<%= to_string(product) %>"><%= crypto_name(product) %> - <%= fiat_character(product) %></a>
+              <div tabindex="0" class="btn btn-ghost rounded-btn text-xs sm:text-md">USD</div>
+              <ul class="shadow-xl menu dropdown-content bg-base-100 w-40 text-gray-800">
+                <%= for product <- @products["usd"] do %>
+                  <li class="text-gray-800 font-semibold cursor-pointer text-xs sm:text-md">
+                    <a href="#" phx-capture-click="add-product" phx-target="<%= @myself %>" phx-value-product-id="<%= to_string(product) %>"><span class="text-indigo-500 ml-1 mr-1"><%= crypto_short_name(product) %></span>on<span class="text-gray-800 ml-1 mr-1"> <%= product.exchange_name %></a></span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" class="btn btn-ghost rounded-btn text-xs sm:text-md">EUR</div>
+              <ul class="shadow-xl menu dropdown-content bg-base-100 w-40 text-gray-800">
+                <%= for product <- @products["eur"] do %>
+                  <li class="text-gray-800 font-semibold cursor-pointer text-xs sm:text-md">
+                    <a href="#" phx-capture-click="add-product" phx-target="<%= @myself %>" phx-value-product-id="<%= to_string(product) %>"><span class="text-indigo-500 ml-1 mr-1"><%= crypto_short_name(product) %></span>on<span class="text-gray-800 ml-1 mr-1"> <%= product.exchange_name %></a></span>
                   </li>
                 <% end %>
               </ul>
@@ -43,5 +54,11 @@ defmodule CryptoWatchWeb.NavbarComponent do
     )
 
     {:noreply, socket}
+  end
+
+  def products_grouped_by_currency do
+    CryptoWatch.available_products()
+    |> Enum.group_by(fn product -> fiat_symbol(product) end)
+    |> IO.inspect()
   end
 end

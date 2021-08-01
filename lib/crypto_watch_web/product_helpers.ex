@@ -16,6 +16,14 @@ defmodule CryptoWatchWeb.ProductHelpers do
     end
   end
 
+  def crypto_short_name(product) do
+    case crypto_and_fiat_symbols(product) do
+      %{crypto_symbol: "btc"} -> "BTC"
+      %{crypto_symbol: "eth"} -> "ETH"
+      %{crypto_symbol: "ltc"} -> "LTC"
+    end
+  end
+
   def fiat_character(product) do
     case crypto_and_fiat_symbols(product) do
       %{fiat_symbol: "usd"} -> "$"
