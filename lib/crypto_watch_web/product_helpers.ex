@@ -1,4 +1,6 @@
 defmodule CryptoWatchWeb.ProductHelpers do
+  alias CryptoWatch.Product
+
   def crypto_symbol(product),
     do: crypto_and_fiat_symbols(product).crypto_symbol
 
@@ -35,6 +37,11 @@ defmodule CryptoWatchWeb.ProductHelpers do
     {price, _} = Float.parse(price)
 
     :erlang.float_to_binary(price, decimals: 2)
+  end
+
+  def product_from_string(product_id) do
+    [exchange_name, currency_pair] = String.split(product_id, ":")
+    Product.new(exchange_name, currency_pair)
   end
 
   def crypto_icon(conn, product) do

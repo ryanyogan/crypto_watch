@@ -18,6 +18,7 @@ defmodule CryptoWatchWeb.Router do
     pipe_through :browser
 
     live "/", CryptoDashboardLive
+    live "/products/:id", ProductLive
     get "/products", ProductController, :index
   end
 
