@@ -25,7 +25,7 @@ defmodule CryptoWatchWeb.ProductComponent do
   @impl true
   def render(%{trade: trade} = assigns) when not is_nil(trade) do
     ~L"""
-    <div class="shadow-md m-2 sm:m-2">
+    <div class="shadow-lg m-2 sm:m-2">
       <div class="stat">
         <div class="stat-figure">
           <div class="flex-shrink-0 h-10 w-10">
