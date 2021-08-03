@@ -4,11 +4,7 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import topbar from "topbar";
 import { LiveSocket } from "phoenix_live_view";
-import { ChartHook } from "./chart";
-
-// const Hooks = {
-//   Chart: ChartHook,
-// };
+import { Hooks } from "./hooks";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
@@ -17,7 +13,7 @@ const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken, timezone },
-  // hooks: Hooks,
+  hooks: Hooks,
 });
 
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
